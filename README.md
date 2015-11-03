@@ -8,4 +8,4 @@ I used the most popular hashtags that I identified for each Presidential candida
 
 I compared all tweets (including retweets) vs. original tweets (no retweets) for all Presidential candidates.  I wanted to see whether the proportions were different for the different candidates.
 
-
+![Tweets](https://github.com/kimkraunz/twitter_elections_analysis/blob/master/Tweet_vs_retweet.png)
