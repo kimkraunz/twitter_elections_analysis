@@ -105,8 +105,53 @@ Trump.df$hashtag <- as.factor("#Trump2016")
 df <- rbind(Christie.df, Carson.df, Fiorina.df, Clinton.df, Huckabee.df, Kasich.df, Pataki.df, Jindal.df, Santorum.df, Bush.df, Cruz.df, Rubio.df, Paul.df, Trump.df, Sanders.df)
 ```
 
+I changed the timezone from global standard time (GST) to mountain standard time (MST), as the debate was held in Boulder, CO.  I also limited the tweets to 6 hours before the debate and 2 hours after.
+
+```
+df$created <- as.POSIXct(df$created, tz="Europe/London")
+df$created <- format(df$created, tz="America/Denver",usetz=TRUE)
+df$created <- as.POSIXct(df$created, tz="America/Denver")
+
+# Limit time created to 6 hours before debate and 2 hours after
+df_tweets <- subset(df, (created >= as.POSIXct('2015-11-10 12:00')))
+df_tweets <- subset(df, (created <= as.POSIXct('2015-11-10 22:00')))
+```
+
+I created a data frame with the candidates, number of tweets (including retweets), number of original tweets, and their party.
+
+```
+# Create data frame of counts of original tweets and all tweets by candidate and party
+df_tweets <- cbind(c("Bush", "Carson", "Christie", "Fiorina", "Huckabee", "Jindal", "Kasich", "Pataki", "Santorum", "Trump", "Sanders", "Rubio", "Cruz", "Paul", "Clinton"), c(length(Bush), length(Carson), length(Christie), length(Fiorina), length(Huckabee), length(Jindal), length(Kasich), length(Pataki), length(Santorum), length(Trump), length(Sanders), length(Rubio), length(Cruz), length(Paul), length(Clinton)), c(nrow(Bush.df), nrow(Carson.df), nrow(Christie.df), nrow(Fiorina.df), nrow(Huckabee.df), nrow(Jindal.df), nrow(Kasich.df), nrow(Pataki.df), nrow(Santorum.df), nrow(Trump.df), nrow(Sanders.df), nrow(Rubio.df), nrow(Cruz.df), nrow(Paul.df), nrow(Clinton.df)), c("Republican", "Republican","Republican","Republican","Republican","Republican","Republican","Republican","Republican","Republican","Democrat", "Republican","Republican","Republican","Democrat"))
+
+df_tweets <- as.data.frame(df_tweets, stringsAsFactors=FALSE)
+colnames(df_tweets) <- c("Candidate", "w_retweets", "wo_retweets", "party")
+df_tweets$w_retweets <- as.numeric(df_tweets$w_retweets)
+df_tweets$wo_retweets <- as.numeric(df_tweets$wo_retweets)
+```
+
 I compared all tweets (including retweets) vs. original tweets (no retweets) for all Presidential candidates.  I wanted to see whether the proportions were different for the different candidates.  The shaded are represents the standard deviation so I could see if we had any outliers.
+
+```p1 <- ggplot(df_tweets, aes(x = w_retweets, y = wo_retweets, color=factor(party))) + geom_point() + geom_text(aes(label=Candidate), hjust = 1.0, vjust = 1.5) + ggtitle("All tweets vs. original tweets by Presidential\ncandidates on 11/10 (Republican debate)") + scale_x_continuous("Tweets (including retweets)")  +  scale_y_continuous("Original tweets")  + stat_smooth(method = 'lm', aes(colour = 'linear'), se = TRUE) + scale_color_manual(values=c("blue", "black", "firebrick")) + theme(plot.title = element_text(size = 20, lineheight=.8, face="bold"))
+p1
+```
 
 ![Tweets](Tweet_vs_retweet.png)
 
+Interestingly, Ted Cruz is hashtagged in a higher proportion of retweets than his counterparts and Rand Paul and Ben Carson are more likely to have a hashtag in an original tweet.
 
+I also wanted to see what the frequency of tweets per hour were for the top candidates, as well as Hillary Clinton (Democratic leader), and Chris Christie (stalled candidate).
+
+```
+# Get frequency counts of original tweets by hashtag
+tweets = table(df_tweets$hashtag)
+as.data.frame(tweets)
+
+# Limit dataset to Carson (rising), Christie (stalling), Cruz (good performance ratings), Hillary (for Democratic comparison), Bush (stalling), Rubio (rising?), Paul (high # of tweets), Trump (reported winner)
+limited.tweets.df <- subset(df_tweets , subset = hashtag == "#Trump2016" | hashtag == "#CruzCrew" |  hashtag == "#standwithrand" | hashtag == "#bencarson" | hashtag == "#MarcoRubio" | hashtag == "#CarlyFiorona"| hashtag == "#Hillary2016"| hashtag == "#Christie2016" | hashtag == "#jebbush")
+
+# Create plot histogram line graph of tweet count by hour
+p2 <- ggplot(data=limited.tweets.df, aes(x=created)) 
+p2 + geom_line(aes(group = hashtag, colour = hashtag), stat="bin", binwidth=3600) + scale_x_datetime("Time") + scale_y_continuous("Tweets") + ggtitle("Original tweets with candidate hashtags\nduring Republican debate (10/28)") + theme(plot.title = element_text(size = 20, lineheight=.8, face="bold"))
+```
+
+![Freq_tweets](Tweet_vs_retweet.png)
