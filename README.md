@@ -4,6 +4,20 @@ I've been scraping fantasy football weekly projection websites with R and gainin
 
 It actually took me a while to get tweets using the Twitter API.  For some reason, everytime I tried to login I would get an error that my keys and tokens were not authorized.  After spending too much time on it, I decided to hack my husband's account and create a new development account within his account.  Problem solved!  It is still unknown why I couldn't get my development account to work.
 
+'''library("devtools")
+library("twitteR")
+library("rjson")
+library("bit64")
+library("httr")
+library("ggplot2")
+
+api_key <- "t7EraVUUaJa2Z462BNHu4frWe"
+api_secret <- "Qjt7QP4eHsQ3uD6x2RDDxSYvUL6aJbgbO5UPCHQigSBEUQg0x8"
+access_token <- "2165066318-PVpl6l1fLcdopmLblHmnPSGmpe6FUqdzomJf4bw"
+access_token_secret <- "XJHZcmsaSIQjYzK15Q3wVKFVCnUtHCu3YcUfuOReZZdls"
+
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)'''
+
 I used the most popular hashtags that I identified for each Presidential candidate, with the exception of Ben Carson, who seemed to be promoting two hashtags (#bencarson, #BC2DC16).  I grabbed the tweets with the hashtags using the twitteR library in R.
 
 I compared all tweets (including retweets) vs. original tweets (no retweets) for all Presidential candidates.  I wanted to see whether the proportions were different for the different candidates.
