@@ -131,7 +131,8 @@ df_tweets$wo_retweets <- as.numeric(df_tweets$wo_retweets)
 
 I compared all tweets (including retweets) vs. original tweets (no retweets) for all Presidential candidates.  I wanted to see whether the proportions were different for the different candidates.  The shaded are represents the standard deviation so I could see if we had any outliers.
 
-```p1 <- ggplot(df_tweets, aes(x = w_retweets, y = wo_retweets, color=factor(party))) + geom_point() + geom_text(aes(label=Candidate), hjust = 1.0, vjust = 1.5) + ggtitle("All tweets vs. original tweets by Presidential\ncandidates on 11/10 (Republican debate)") + scale_x_continuous("Tweets (including retweets)")  +  scale_y_continuous("Original tweets")  + stat_smooth(method = 'lm', aes(colour = 'linear'), se = TRUE) + scale_color_manual(values=c("blue", "black", "firebrick")) + theme(plot.title = element_text(size = 20, lineheight=.8, face="bold"))
+```
+p1 <- ggplot(df_tweets, aes(x = w_retweets, y = wo_retweets, color=factor(party))) + geom_point() + geom_text(aes(label=Candidate), hjust = 1.0, vjust = 1.5) + ggtitle("All tweets vs. original tweets by Presidential\ncandidates on 11/10 (Republican debate)") + scale_x_continuous("Tweets (including retweets)")  +  scale_y_continuous("Original tweets")  + stat_smooth(method = 'lm', aes(colour = 'linear'), se = TRUE) + scale_color_manual(values=c("blue", "black", "firebrick")) + theme(plot.title = element_text(size = 20, lineheight=.8, face="bold"))
 p1
 ```
 
@@ -154,4 +155,6 @@ p2 <- ggplot(data=limited.tweets.df, aes(x=created))
 p2 + geom_line(aes(group = hashtag, colour = hashtag), stat="bin", binwidth=3600) + scale_x_datetime("Time") + scale_y_continuous("Tweets") + ggtitle("Original tweets with candidate hashtags\nduring Republican debate (10/28)") + theme(plot.title = element_text(size = 20, lineheight=.8, face="bold"))
 ```
 
-![Freq_tweets](Tweet_vs_retweet.png)
+![Freq_tweets](Tweet_count_during_debate.png)
+
+This twitter analysis was just exploratory.  I would like to perform sentiment analysis and a word cloud on these tweets as well.
